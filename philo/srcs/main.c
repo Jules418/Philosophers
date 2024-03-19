@@ -3,14 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:12:48 by jules             #+#    #+#             */
-/*   Updated: 2024/03/19 05:40:27 by jules            ###   ########.fr       */
+/*   Updated: 2024/03/19 09:19:32 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	start_display(t_common c)
+{
+	(void) c;
+	return ;
+}
 
 int	main(int argc, char **argv)
 {
@@ -21,7 +27,8 @@ int	main(int argc, char **argv)
 	ps = create_philo_array(c);
 	if (!c || !ps)
 		return (EXIT_FAILURE);
-
+	start_display(c);
+	run_philo(ps, c);
 	free_philo_array(ps, c->nb_philo);
 	free_common(c);
 	return (EXIT_SUCCESS);

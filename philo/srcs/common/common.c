@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   common.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 11:51:19 by jules             #+#    #+#             */
-/*   Updated: 2024/03/18 11:57:43 by jules            ###   ########.fr       */
+/*   Updated: 2024/03/19 09:08:51 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ t_common	initialize_common(int argc, char **argv)
 		c->nb_philo = ft_atoi(argv[5], &err);
 	else
 		c->max_eat_counter = -1;
+	c->running = 1;
 	c->forks = initialize_forks(c->nb_philo);
 	if (err || errors_in_common(c))
 		return (free_common(c), NULL);

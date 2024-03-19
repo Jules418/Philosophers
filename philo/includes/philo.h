@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 20:59:42 by jules             #+#    #+#             */
-/*   Updated: 2024/03/19 05:13:45 by jules            ###   ########.fr       */
+/*   Updated: 2024/03/19 09:08:20 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct s_common
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_eat_counter;
+	int				running;
 }	*t_common;
 
 typedef struct s_philo

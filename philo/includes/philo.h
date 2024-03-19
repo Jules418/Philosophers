@@ -6,7 +6,7 @@
 /*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 20:59:42 by jules             #+#    #+#             */
-/*   Updated: 2024/03/18 11:58:40 by jules            ###   ########.fr       */
+/*   Updated: 2024/03/19 05:13:45 by jules            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@ typedef struct s_common
 
 typedef struct s_philo
 {
-	size_t		id_philo;
+	int			id_philo;
 	int			last_time_eat;
 	int			eat_count;
-	t_common	*common;
-}	t_philo;
+	t_common	common;
+}	*t_philo;
 
 int				ft_atoi(char *s, int *err_code);
 
@@ -42,5 +42,10 @@ void			free_common(t_common c);
 pthread_mutex_t	*initialize_forks(int nb_philo);
 int				errors_in_common(t_common c);
 t_common		initialize_common(int argc, char **argv);
+
+void	free_philo(t_philo p);
+void	free_philo_array(t_philo *ps, int size);
+t_philo	create_philo(int id, t_common c);
+t_philo	*create_philo_array(t_common c);
 
 #endif

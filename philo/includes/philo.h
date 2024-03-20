@@ -6,7 +6,7 @@
 /*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 20:59:42 by jules             #+#    #+#             */
-/*   Updated: 2024/03/19 09:08:20 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/03/20 16:50:13 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include <stdlib.h>
 # include <limits.h>
 # include <pthread.h>
+#include <sys/time.h>
+#include <stdio.h>
 
 typedef struct s_common
 {
@@ -48,5 +50,6 @@ void	free_philo(t_philo p);
 void	free_philo_array(t_philo *ps, int size);
 t_philo	create_philo(int id, t_common c);
 t_philo	*create_philo_array(t_common c);
+void	*routine_philo(void *arg);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 04:56:49 by jules             #+#    #+#             */
-/*   Updated: 2024/03/19 05:12:16 by jules            ###   ########.fr       */
+/*   Updated: 2024/03/20 17:01:25 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,12 @@ t_philo	*create_philo_array(t_common c)
 
 void	*routine_philo(void *arg)
 {
-	t_philo	p;
+	t_philo 		p;
+	struct timeval	tv;
 
 	p = arg;
+	gettimeofday(&tv, NULL);
+	p->last_time_eat = tv.tv_sec;
+	printf("time : %d\n", p->last_time_eat);
+	return (NULL);
 }

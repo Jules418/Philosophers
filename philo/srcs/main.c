@@ -6,7 +6,7 @@
 /*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:12:48 by jules             #+#    #+#             */
-/*   Updated: 2024/03/19 11:29:59 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/03/20 16:50:19 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,49 @@ void	start_display(t_common c)
 	return ;
 }
 
+int	run_philo(t_philo *ps, t_common c)
+{
+	int			i;
+	pthread_t	*threads;
+
+	threads = malloc(sizeof(pthread_t) * c->nb_philo);
+	if (!threads)
+		return 1;
+	i = 0;
+	while (i < c->nb_philo)
+	{
+		if (pthread_create(threads + i, NULL, routine_philo, ps[i]))
+		{
+			c->running = 0;
+			break;
+		}
+		i++;
+	}
+	i--;
+	while (i >= 0)
+	{
+		pthread_join(threads[i], NULL);
+		i--;
+	}
+	free(threads);
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
 	t_common	c;
 	t_philo		*ps;
+	int			exit_state;
 
+	exit_state = EXIT_SUCCESS;
 	c = initialize_common(argc, argv);
 	ps = create_philo_array(c);
 	if (!c || !ps)
 		return (EXIT_FAILURE);
 	start_display(c);
-	run_philo(ps, c);
+	if (run_philo(ps, c))
+		exit_state = EXIT_FAILURE;
 	free_philo_array(ps, c->nb_philo);
 	free_common(c);
-	return (EXIT_SUCCESS);
+	return (exit_state);
 }

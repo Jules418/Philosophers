@@ -6,7 +6,7 @@
 /*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 20:59:42 by jules             #+#    #+#             */
-/*   Updated: 2024/03/20 16:50:13 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/03/21 12:05:43 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@
 # include <stdlib.h>
 # include <limits.h>
 # include <pthread.h>
-#include <sys/time.h>
-#include <stdio.h>
+# include <sys/time.h>
+# include <stdio.h>
+# include <unistd.h>
 
 typedef struct s_common
 {
@@ -27,18 +28,21 @@ typedef struct s_common
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				max_eat_counter;
+	struct timeval	start_time;
 	int				running;
 }	*t_common;
 
 typedef struct s_philo
 {
-	int			id_philo;
-	int			last_time_eat;
-	int			eat_count;
-	t_common	common;
+	int				id_philo;
+	struct timeval	last_time_eat;
+	int				eat_count;
+	short			state;
+	t_common		common;
 }	*t_philo;
 
 int				ft_atoi(char *s, int *err_code);
+long			time_diff(struct timeval a, struct timeval b);
 
 void			free_forks(pthread_mutex_t *forks, int size);
 void			free_common(t_common c);

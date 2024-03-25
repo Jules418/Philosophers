@@ -6,7 +6,7 @@
 /*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:12:48 by jules             #+#    #+#             */
-/*   Updated: 2024/03/25 12:56:17 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/03/25 16:38:26 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int	run_philo(t_philo *ps, t_common c)
 		if (pthread_create(threads + i, NULL, routine_philo, ps[i]))
 		{
 			c->running = 0;
+			printf("%d failed\n", i);
 			break;
 		}
 		i++;

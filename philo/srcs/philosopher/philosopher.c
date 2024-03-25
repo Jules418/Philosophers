@@ -6,7 +6,7 @@
 /*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 04:56:49 by jules             #+#    #+#             */
-/*   Updated: 2024/03/25 14:28:24 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/03/25 16:42:18 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	print_state(t_philo p)
 		return (1);
 	dt = time_diff(tv, p->common->start_time);
 	if (p->common->running)
-		printf("%ld | Philo %d | Action : %s", dt, p->id_philo + 1, action);
+		printf("%ld | Philo %d | Action : %s\n", dt, p->id_philo + 1, action);
 	return (0);
 }
 
@@ -128,7 +128,7 @@ void	*routine_philo(void *arg)
 	}
 	if (p->id_philo % 2)
 		usleep(p->common->time_to_die * 500);
-	printf("should run %d : %d\n", p->id_philo, should_run(p));
+	// printf("should run %d : %d (running %d)\n", p->id_philo, should_run(p), p->common->running);
 	while (should_run(p))
 	{
 		print_state(p);

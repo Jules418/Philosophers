@@ -6,7 +6,7 @@
 /*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 11:51:19 by jules             #+#    #+#             */
-/*   Updated: 2024/03/19 09:08:51 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/03/25 16:41:33 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ t_common	initialize_common(int argc, char **argv)
 	c->time_to_eat = ft_atoi(argv[3], &err);
 	c->time_to_sleep = ft_atoi(argv[4], &err);
 	if (argc == 6)
-		c->nb_philo = ft_atoi(argv[5], &err);
+		c->max_eat_counter = ft_atoi(argv[5], &err);
 	else
 		c->max_eat_counter = -1;
 	c->running = 1;

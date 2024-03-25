@@ -6,7 +6,7 @@
 /*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:12:48 by jules             #+#    #+#             */
-/*   Updated: 2024/03/21 11:58:59 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/03/25 12:56:17 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	main(int argc, char **argv)
 	if (!c || !ps)
 		return (EXIT_FAILURE);
 	start_display(c);
-	if (!gettimeofday(&(c->start_time), NULL))
+	if (gettimeofday(&(c->start_time), NULL) == 0)
 		if (run_philo(ps, c))
 			exit_state = EXIT_FAILURE;
 	free_philo_array(ps, c->nb_philo);

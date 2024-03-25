@@ -6,7 +6,7 @@
 /*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 04:56:49 by jules             #+#    #+#             */
-/*   Updated: 2024/03/21 12:26:18 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/03/25 14:28:24 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,23 +83,37 @@ int	print_state(t_philo p)
 		return (1);
 	dt = time_diff(tv, p->common->start_time);
 	if (p->common->running)
-		printf("%ld | Philo %d | Action : %s", dt, p->id_philo, p->state);
+		printf("%ld | Philo %d | Action : %s", dt, p->id_philo + 1, action);
 	return (0);
 }
 
 int	should_run(t_philo p)
 {
-	if ((p->common->max_eat_counter < 0) || 
-			(p->eat_count >= p->common->max_eat_counter))
+	if (p->common->max_eat_counter < 0)
+		return (p->common->running);
+	if	(p->eat_count >= p->common->max_eat_counter)
 		return (0);
-	if (p->common->running == 0)
-		return (0);
-	return (1);
+	return (p->common->running);
 }
 
-int	try_eat(t_philo p)
+void	eat(t_philo p, t_common c)
 {
-	
+	if (!should_run(p))
+		return ;
+	pthread_mutex_lock(c->forks + p->id_philo);
+	pthread_mutex_lock(c->forks + ((p->id_philo + 1) % c->nb_philo));
+	p->state = 1;
+	if(gettimeofday(&(p->last_time_eat), NULL) == -1)
+		c->running = 0;
+	else
+	{
+		print_state(p);
+		usleep(c->time_to_eat * 1000);
+	}
+	pthread_mutex_unlock(c->forks + p->id_philo);
+	pthread_mutex_unlock(c->forks + ((p->id_philo + 1) % c->nb_philo));
+	p->state = 2;
+	p->eat_count++;
 }
 
 void	*routine_philo(void *arg)
@@ -112,9 +126,19 @@ void	*routine_philo(void *arg)
 		p->common->running = 0;
 		return (NULL);	
 	}
+	if (p->id_philo % 2)
+		usleep(p->common->time_to_die * 500);
+	printf("should run %d : %d\n", p->id_philo, should_run(p));
 	while (should_run(p))
 	{
-		
+		print_state(p);
+		if (p->state == 0)
+			eat(p, p->common);
+		else
+		{
+			p->state = 0;
+			usleep(p->common->time_to_sleep * 1000);
+		}
 	}
 	return (NULL);
 }

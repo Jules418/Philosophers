@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 11:53:38 by jules             #+#    #+#             */
-/*   Updated: 2024/03/21 11:19:27 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/03/26 08:10:10 by jules            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,9 @@ int	ft_atoi(char *s, int *err_code)
 		*err_code = 1;
 	return (n * sign);
 }
+
 long	time_diff(struct timeval a, struct timeval b)
 {
-	return ((a.tv_sec - b.tv_sec) * 1000 +
-				(a.tv_usec - b.tv_usec) / 1000);
+	return ((a.tv_sec - b.tv_sec) * 1000 + \
+		(a.tv_usec - b.tv_usec) / 1000);
 }

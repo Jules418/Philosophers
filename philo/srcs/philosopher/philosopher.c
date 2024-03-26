@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 04:56:49 by jules             #+#    #+#             */
-/*   Updated: 2024/03/25 16:42:18 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/03/26 08:02:10 by jules            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,60 +85,4 @@ int	print_state(t_philo p)
 	if (p->common->running)
 		printf("%ld | Philo %d | Action : %s\n", dt, p->id_philo + 1, action);
 	return (0);
-}
-
-int	should_run(t_philo p)
-{
-	if (p->common->max_eat_counter < 0)
-		return (p->common->running);
-	if	(p->eat_count >= p->common->max_eat_counter)
-		return (0);
-	return (p->common->running);
-}
-
-void	eat(t_philo p, t_common c)
-{
-	if (!should_run(p))
-		return ;
-	pthread_mutex_lock(c->forks + p->id_philo);
-	pthread_mutex_lock(c->forks + ((p->id_philo + 1) % c->nb_philo));
-	p->state = 1;
-	if(gettimeofday(&(p->last_time_eat), NULL) == -1)
-		c->running = 0;
-	else
-	{
-		print_state(p);
-		usleep(c->time_to_eat * 1000);
-	}
-	pthread_mutex_unlock(c->forks + p->id_philo);
-	pthread_mutex_unlock(c->forks + ((p->id_philo + 1) % c->nb_philo));
-	p->state = 2;
-	p->eat_count++;
-}
-
-void	*routine_philo(void *arg)
-{
-	t_philo 		p;
-
-	p = arg;
-	if (gettimeofday(&(p->last_time_eat), NULL) == -1)
-	{
-		p->common->running = 0;
-		return (NULL);	
-	}
-	if (p->id_philo % 2)
-		usleep(p->common->time_to_die * 500);
-	// printf("should run %d : %d (running %d)\n", p->id_philo, should_run(p), p->common->running);
-	while (should_run(p))
-	{
-		print_state(p);
-		if (p->state == 0)
-			eat(p, p->common);
-		else
-		{
-			p->state = 0;
-			usleep(p->common->time_to_sleep * 1000);
-		}
-	}
-	return (NULL);
 }

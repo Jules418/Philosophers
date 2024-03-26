@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 20:59:42 by jules             #+#    #+#             */
-/*   Updated: 2024/03/25 14:19:31 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/03/26 09:17:00 by jules            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,13 @@ pthread_mutex_t	*initialize_forks(int nb_philo);
 int				errors_in_common(t_common c);
 t_common		initialize_common(int argc, char **argv);
 
-void	free_philo(t_philo p);
-void	free_philo_array(t_philo *ps, int size);
-t_philo	create_philo(int id, t_common c);
-t_philo	*create_philo_array(t_common c);
-void	*routine_philo(void *arg);
+void			free_philo(t_philo p);
+void			free_philo_array(t_philo *ps, int size);
+t_philo			create_philo(int id, t_common c);
+t_philo			*create_philo_array(t_common c);
+int				print_state(t_philo p);
+int				should_run(t_philo p);
+void			*dead_checker(void *args);
+void			*routine_philo(void *arg);
 
 #endif

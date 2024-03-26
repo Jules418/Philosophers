@@ -30,7 +30,6 @@ DEPENDENCIES =
 
 .PHONY:		all
 all:
-			$(MAKE_MINILIBX)
 			$(MAKE) $(NAME)
 
 test:	$(OBJS_TEST)

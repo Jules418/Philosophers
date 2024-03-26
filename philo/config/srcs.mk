@@ -6,6 +6,8 @@ SRCS =		main.c \
 
 COMMON_SRCS = common/common.c
 
-PHILO_SRCS = philosopher/philosopher.c
+PHILO_SRCS = philosopher/philosopher.c \
+				philosopher/philo_behavior.c \
+				philosopher/philo_checker.c
 
 UTILS_SRCS = utils/utils.c

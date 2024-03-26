@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:12:48 by jules             #+#    #+#             */
-/*   Updated: 2024/03/25 16:38:26 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/03/26 08:09:54 by jules            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,26 +23,24 @@ int	run_philo(t_philo *ps, t_common c)
 	int			i;
 	pthread_t	*threads;
 
-	threads = malloc(sizeof(pthread_t) * c->nb_philo);
+	threads = malloc(sizeof(pthread_t) * (c->nb_philo + 1));
 	if (!threads)
-		return 1;
-	i = 0;
-	while (i < c->nb_philo)
+		return (1);
+	i = -1;
+	while (++i < c->nb_philo)
 	{
 		if (pthread_create(threads + i, NULL, routine_philo, ps[i]))
 		{
 			c->running = 0;
-			printf("%d failed\n", i);
-			break;
+			break ;
 		}
-		i++;
 	}
-	i--;
-	while (i >= 0)
-	{
+	if (pthread_create(threads + i, NULL, dead_checker, ps))
+		c->running = 0;
+	while (--i >= 0)
 		pthread_join(threads[i], NULL);
-		i--;
-	}
+	c->running = 0;
+	pthread_join(threads[c->nb_philo], NULL);
 	free(threads);
 	return (0);
 }

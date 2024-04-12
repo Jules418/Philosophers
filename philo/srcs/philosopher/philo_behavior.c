@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_behavior.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 05:45:34 by jules             #+#    #+#             */
-/*   Updated: 2024/03/26 09:38:46 by jules            ###   ########.fr       */
+/*   Updated: 2024/04/12 10:56:32 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,16 @@ void	eat(t_philo p, t_common c)
 	if (!should_run(p))
 		return ;
 	pthread_mutex_lock(c->forks + p->id_philo);
-	pthread_mutex_lock(c->forks + ((p->id_philo + 1) % c->nb_philo));
-	p->state = 1;
+	p->state = POSSES_ONE_FORK;
+	print_state(p);
+	if (((p->id_philo + 1) % c->nb_philo) != p->id_philo)
+		pthread_mutex_lock(c->forks + ((p->id_philo + 1) % c->nb_philo));
+	else
+	{
+		pthread_mutex_unlock(c->forks + p->id_philo);
+		wait_ms(p->common, p->common->time_to_die * 2);
+	}
+	p->state = EATING;
 	p->eat_count++;
 	if (gettimeofday(&(p->last_time_eat), NULL) == -1)
 		c->running = 0;
@@ -57,7 +65,6 @@ void	eat(t_philo p, t_common c)
 	}
 	pthread_mutex_unlock(c->forks + p->id_philo);
 	pthread_mutex_unlock(c->forks + ((p->id_philo + 1) % c->nb_philo));
-	p->state = 2;
 }
 
 void	*routine_philo(void *arg)
@@ -74,13 +81,14 @@ void	*routine_philo(void *arg)
 		wait_ms(p->common, 100);
 	while (should_run(p))
 	{
-		print_state(p);
-		if (p->state == 0)
+		p->common->running = !print_state(p);
+		if (p->state == THINKING)
 			eat(p, p->common);
 		else
 		{
-			p->state = 0;
+			p->state = SLEEPING;
 			wait_ms(p->common, p->common->time_to_sleep);
+			p->state = THINKING;
 		}
 	}
 	return (NULL);

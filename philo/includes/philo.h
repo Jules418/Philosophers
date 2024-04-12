@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 20:59:42 by jules             #+#    #+#             */
-/*   Updated: 2024/03/26 09:17:00 by jules            ###   ########.fr       */
+/*   Updated: 2024/04/12 10:02:29 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,12 @@
 # include <sys/time.h>
 # include <stdio.h>
 # include <unistd.h>
+
+# define THINKING 0
+# define POSSES_ONE_FORK 1
+# define EATING 2
+# define SLEEPING 3
+# define DEAD 4
 
 typedef struct s_common
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_checker.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 08:02:37 by jules             #+#    #+#             */
-/*   Updated: 2024/03/26 09:40:56 by jules            ###   ########.fr       */
+/*   Updated: 2024/04/12 10:46:27 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@ int	is_dead_philo(t_philo p)
 	if (!should_run(p))
 		return (0);
 	if (gettimeofday(&current_time, NULL) == -1)
+	{
 		return (1);
+	}
 	dt = time_diff(current_time, p->last_time_eat);
 	return (dt > p->common->time_to_die);
 }
@@ -28,30 +30,25 @@ int	is_dead_philo(t_philo p)
 void	*dead_checker(void *args)
 {
 	t_philo	*p;
-	int		nb_philo;
 	int		*running;
 	int		i;
-	int		one_died;
 
 	p = args;
-	one_died = 0;
 	if (!p)
 		return (NULL);
 	running = &(p[0]->common->running);
-	nb_philo = p[0]->common->nb_philo;
 	i = 0;
 	while (*running)
 	{
 		if (is_dead_philo(p[i]))
 		{
 			*running = 0;
-			one_died = 1;
+			p[i]->state = DEAD;
 			break ;
 		}
-		i = (i + 1) % nb_philo;
+		i = (i + 1) % (p[0]->common->nb_philo);
 	}
-	usleep(500);
-	if (one_died)
-		printf("philo %d is dead\n", i + 1);
+	if (p[i]->state == DEAD)
+		print_state(p[i]);
 	return (NULL);
 }

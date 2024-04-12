@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 04:56:49 by jules             #+#    #+#             */
-/*   Updated: 2024/03/26 08:02:10 by jules            ###   ########.fr       */
+/*   Updated: 2024/04/12 10:09:35 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,18 +71,22 @@ int	print_state(t_philo p)
 {
 	struct timeval	tv;
 	long			dt;
-	char			*action;
+	char			*message;
 
-	if (p->state == 0)
-		action = "THINKING";
-	if (p->state == 1)
-		action = "EATING";
-	if (p->state == 2)
-		action = "SLEEPING";
+	if (p->state == POSSES_ONE_FORK)
+		message = "has taken a fork";
+	else if (p->state == EATING)
+		message = "is eating";
+	else if (p->state == SLEEPING)
+		message = "is sleeping";
+	else if (p->state == THINKING)
+		message = "is thinking";
+	else
+		message = "died";
 	if (gettimeofday(&tv, NULL) == -1)
 		return (1);
 	dt = time_diff(tv, p->common->start_time);
-	if (p->common->running)
-		printf("%ld | Philo %d | Action : %s\n", dt, p->id_philo + 1, action);
+	if (p->common->running || (p->state == DEAD))
+		printf("%ld %d %s\n", dt, p->id_philo + 1, message);
 	return (0);
 }

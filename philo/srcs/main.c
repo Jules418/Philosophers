@@ -6,7 +6,7 @@
 /*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:12:48 by jules             #+#    #+#             */
-/*   Updated: 2024/03/26 08:09:54 by jules            ###   ########.fr       */
+/*   Updated: 2024/04/12 20:59:02 by jules            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,15 @@ int	run_philo(t_philo *ps, t_common c)
 	{
 		if (pthread_create(threads + i, NULL, routine_philo, ps[i]))
 		{
-			c->running = 0;
+			set_running(c, 0);
 			break ;
 		}
 	}
 	if (pthread_create(threads + i, NULL, dead_checker, ps))
-		c->running = 0;
+		set_running(c, 0);
 	while (--i >= 0)
 		pthread_join(threads[i], NULL);
-	c->running = 0;
+	set_running(c, 0);
 	pthread_join(threads[c->nb_philo], NULL);
 	free(threads);
 	return (0);

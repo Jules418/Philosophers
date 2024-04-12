@@ -3,94 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   common.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/18 11:51:19 by jules             #+#    #+#             */
-/*   Updated: 2024/03/25 16:41:33 by jbanacze         ###   ########.fr       */
+/*   Created: 2024/04/12 16:52:33 by jules             #+#    #+#             */
+/*   Updated: 2024/04/12 19:39:22 by jules            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	free_forks(pthread_mutex_t *forks, int size)
+int	get_running(t_common c)
 {
-	int	i;
+	int	value;
 
-	if (!forks)
-		return ;
-	i = 0;
-	while (i < size)
+	pthread_mutex_lock(&(c->running_mutex));
+	value = c->running;
+	pthread_mutex_unlock(&(c->running_mutex));
+	return (value);	
+}
+
+void set_running(t_common c, int value)
+{
+	pthread_mutex_lock(&(c->running_mutex));
+	c->running = value;
+	pthread_mutex_unlock(&(c->running_mutex));
+}
+
+int	trylock_fork(t_fork *fork, int id_philo)
+{
+	pthread_mutex_lock(&(fork->mutex));
+	if (fork->taken)
 	{
-		pthread_mutex_destroy(forks + i);
-		i++;
+		pthread_mutex_unlock(&(fork->mutex));
+		return (0);
 	}
-	free(forks);
+	fork->taken = 1;
+	fork->id_philo = id_philo;
+	pthread_mutex_unlock(&(fork->mutex));
+	return (1);
 }
 
-void	free_common(t_common c)
+void	unlock_fork(t_fork *fork, int id_philo)
 {
-	if (!c)
-		return ;
-	free_forks(c->forks, c->nb_philo);
-	free(c);
-}
-
-pthread_mutex_t	*initialize_forks(int nb_philo)
-{
-	pthread_mutex_t	*forks;
-	int				i;
-
-	if (nb_philo < 1)
-		return (NULL);
-	forks = malloc(sizeof(pthread_mutex_t) * nb_philo);
-	if (!forks)
-		return (NULL);
-	i = 0;
-	while (i < nb_philo)
+	pthread_mutex_lock(&(fork->mutex));
+	if (id_philo == fork->id_philo)
 	{
-		forks[i] = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
-		i++;
+		fork->id_philo = -1;
+		fork->taken = 0;
 	}
-	return (forks);
-}
-
-int	errors_in_common(t_common c)
-{
-	if (c->nb_philo < 0)
-		return (1);
-	if (c->time_to_die < 0)
-		return (1);
-	if (c->time_to_eat < 0)
-		return (1);
-	if (c->time_to_sleep < 0)
-		return (1);
-	if (!(c->forks))
-		return (1);
-	return (0);
-}
-
-t_common	initialize_common(int argc, char **argv)
-{
-	t_common	c;
-	int			err;
-
-	if ((argc != 5) && (argc != 6))
-		return (NULL);
-	c = malloc(sizeof(struct s_common));
-	if (!c)
-		return (NULL);
-	err = 0;
-	c->nb_philo = ft_atoi(argv[1], &err);
-	c->time_to_die = ft_atoi(argv[2], &err);
-	c->time_to_eat = ft_atoi(argv[3], &err);
-	c->time_to_sleep = ft_atoi(argv[4], &err);
-	if (argc == 6)
-		c->max_eat_counter = ft_atoi(argv[5], &err);
-	else
-		c->max_eat_counter = -1;
-	c->running = 1;
-	c->forks = initialize_forks(c->nb_philo);
-	if (err || errors_in_common(c))
-		return (free_common(c), NULL);
-	return (c);
+	pthread_mutex_unlock(&(fork->mutex));
 }

@@ -54,6 +54,10 @@ debug:
 re:		fclean
 			$(MAKE) all
 
+.PHONY: redebug
+redebug:	fclean
+			$(MAKE) debug
+
 -include $(DEPS)
 $(DIR_BUILD)%.o : $(SRC_PATH)%.c Makefile
 			@mkdir -p $(shell dirname $@)

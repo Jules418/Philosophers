@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_behavior.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 05:45:34 by jules             #+#    #+#             */
-/*   Updated: 2024/04/12 10:56:32 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/04/12 21:37:30 by jules            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	wait_ms(t_common c, int ms)
 	dt = 0;
 	if (gettimeofday(&start_time, NULL) == -1)
 		return ;
-	while (c->running && (dt < ms))
+	while (get_running(c) && (dt < ms))
 	{
 		usleep(500);
 		if (gettimeofday(&current_time, NULL) == -1)
@@ -34,37 +34,38 @@ void	wait_ms(t_common c, int ms)
 int	should_run(t_philo p)
 {
 	if (p->common->max_eat_counter < 0)
-		return (p->common->running);
-	if (p->eat_count + 1 > p->common->max_eat_counter)
+		return (get_running(p->common));
+	if (incr_eat_counter(p, 0) + 1 > p->common->max_eat_counter)
 		return (0);
-	return (p->common->running);
+	return (get_running(p->common));
 }
 
 void	eat(t_philo p, t_common c)
 {
 	if (!should_run(p))
 		return ;
-	pthread_mutex_lock(c->forks + p->id_philo);
-	p->state = POSSES_ONE_FORK;
-	print_state(p);
-	if (((p->id_philo + 1) % c->nb_philo) != p->id_philo)
-		pthread_mutex_lock(c->forks + ((p->id_philo + 1) % c->nb_philo));
-	else
+	while (should_run(p))
+		if (trylock_fork(p->left_fork, p->id_philo))
+			break;
+	set_state(p, POSSES_ONE_FORK);
+	set_running(p->common, !print_state(p));
+	while (should_run(p))
+		if(trylock_fork(p->right_fork, p->id_philo))
+			break;
+	if (should_run(p))
 	{
-		pthread_mutex_unlock(c->forks + p->id_philo);
-		wait_ms(p->common, p->common->time_to_die * 2);
+		set_state(p, EATING);
+		incr_eat_counter(p, 1);
+		if (update_last_time_eat(p) == 0)
+			set_running(c, 0);
+		else
+		{
+			set_running(p->common, !print_state(p));
+			wait_ms(c, c->time_to_eat);
+		}
 	}
-	p->state = EATING;
-	p->eat_count++;
-	if (gettimeofday(&(p->last_time_eat), NULL) == -1)
-		c->running = 0;
-	else
-	{
-		print_state(p);
-		wait_ms(c, c->time_to_eat);
-	}
-	pthread_mutex_unlock(c->forks + p->id_philo);
-	pthread_mutex_unlock(c->forks + ((p->id_philo + 1) % c->nb_philo));
+	unlock_fork(p->right_fork, p->id_philo);
+	unlock_fork(p->left_fork, p->id_philo);
 }
 
 void	*routine_philo(void *arg)
@@ -72,23 +73,22 @@ void	*routine_philo(void *arg)
 	t_philo	p;
 
 	p = arg;
-	if (gettimeofday(&(p->last_time_eat), NULL) == -1)
+	if (update_last_time_eat(p) == 0)
 	{
-		p->common->running = 0;
+		set_running(p->common, 0);
 		return (NULL);
 	}
-	if (p->id_philo % 2)
-		wait_ms(p->common, 100);
 	while (should_run(p))
 	{
-		p->common->running = !print_state(p);
-		if (p->state == THINKING)
+		if (get_state(p) == THINKING)
 			eat(p, p->common);
 		else
 		{
-			p->state = SLEEPING;
+			set_state(p, SLEEPING);
+			set_running(p->common, !print_state(p));
 			wait_ms(p->common, p->common->time_to_sleep);
-			p->state = THINKING;
+			set_state(p, THINKING);
+			set_running(p->common, !print_state(p));
 		}
 	}
 	return (NULL);

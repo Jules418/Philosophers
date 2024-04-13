@@ -6,7 +6,7 @@
 /*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 05:45:34 by jules             #+#    #+#             */
-/*   Updated: 2024/04/12 21:37:30 by jules            ###   ########.fr       */
+/*   Updated: 2024/04/13 10:01:15 by jules            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ void	*routine_philo(void *arg)
 		set_running(p->common, 0);
 		return (NULL);
 	}
+	if (p->id_philo % 2)
+		wait_ms(p->common, p->common->time_to_eat / 2);
 	while (should_run(p))
 	{
 		if (get_state(p) == THINKING)

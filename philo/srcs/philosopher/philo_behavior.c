@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_behavior.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 05:45:34 by jules             #+#    #+#             */
-/*   Updated: 2024/04/15 10:52:27 by jbanacze         ###   ########.fr       */
+/*   Updated: 2024/04/15 19:23:24 by jules            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,20 +48,20 @@ void	eat(t_philo p, t_common c)
 		if (trylock_fork(p->left_fork, p->id_philo))
 			break ;
 	set_state(p, POSSES_ONE_FORK);
-	set_running(p->common, !print_state(p));
+	print_state(p);
 	while (should_run(p))
 		if (trylock_fork(p->right_fork, p->id_philo))
 			break ;
-	set_running(p->common, !print_state(p));
 	if (should_run(p))
 	{
+		print_state(p);
 		set_state(p, EATING);
 		incr_eat_counter(p, 1);
 		if (update_last_time_eat(p) == 0)
 			set_running(c, 0);
 		else
 		{
-			set_running(p->common, !print_state(p));
+			print_state(p);
 			wait_ms(c, c->time_to_eat);
 		}
 	}
@@ -86,10 +86,10 @@ void	*routine_philo(void *arg)
 		else
 		{
 			set_state(p, SLEEPING);
-			set_running(p->common, !print_state(p));
+			print_state(p);
 			wait_ms(p->common, p->common->time_to_sleep);
 			set_state(p, THINKING);
-			set_running(p->common, !print_state(p));
+			print_state(p);
 		}
 	}
 	return (NULL);

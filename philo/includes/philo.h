@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 20:59:42 by jules             #+#    #+#             */
-/*   Updated: 2024/04/12 21:16:32 by jules            ###   ########.fr       */
+/*   Updated: 2024/04/15 10:55:15 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ typedef struct s_common
 	struct timeval	start_time;
 	int				running;
 	pthread_mutex_t	running_mutex;
+	pthread_mutex_t	starting_mutex;
+	pthread_mutex_t	printf_mutex;
 }	*t_common;
 
 typedef struct s_philo
@@ -51,7 +53,7 @@ typedef struct s_philo
 	struct timeval	last_time_eat;
 	pthread_mutex_t	last_time_eat_mutex;
 	int				eat_count;
-	pthread_mutex_t eat_count_mutex;
+	pthread_mutex_t	eat_count_mutex;
 	short			state;
 	pthread_mutex_t	state_mutex;
 	t_fork			*left_fork;

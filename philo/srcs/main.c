@@ -3,20 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:12:48 by jules             #+#    #+#             */
-/*   Updated: 2024/04/12 20:59:02 by jules            ###   ########.fr       */
+/*   Updated: 2024/04/15 10:48:17 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	start_display(t_common c)
-{
-	(void) c;
-	return ;
-}
 
 int	run_philo(t_philo *ps, t_common c)
 {
@@ -27,6 +21,7 @@ int	run_philo(t_philo *ps, t_common c)
 	if (!threads)
 		return (1);
 	i = -1;
+	pthread_mutex_lock(&(c->starting_mutex));
 	while (++i < c->nb_philo)
 	{
 		if (pthread_create(threads + i, NULL, routine_philo, ps[i]))
@@ -37,6 +32,7 @@ int	run_philo(t_philo *ps, t_common c)
 	}
 	if (pthread_create(threads + i, NULL, dead_checker, ps))
 		set_running(c, 0);
+	pthread_mutex_unlock(&(c->starting_mutex));
 	while (--i >= 0)
 		pthread_join(threads[i], NULL);
 	set_running(c, 0);
@@ -56,7 +52,6 @@ int	main(int argc, char **argv)
 	ps = create_philo_array(c);
 	if (!c || !ps)
 		return (EXIT_FAILURE);
-	start_display(c);
 	if (gettimeofday(&(c->start_time), NULL) == 0)
 		if (run_philo(ps, c))
 			exit_state = EXIT_FAILURE;
@@ -64,3 +59,5 @@ int	main(int argc, char **argv)
 	free_common(c);
 	return (exit_state);
 }
+
+//valgrind --tool=helgrind --tool=drd ./philo 4 800 200 200 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialize_common.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 11:51:19 by jules             #+#    #+#             */
-/*   Updated: 2024/04/12 21:18:55 by jules            ###   ########.fr       */
+/*   Updated: 2024/04/15 10:55:47 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,15 @@ void	free_common(t_common c)
 		return ;
 	free_forks(c->forks, c->nb_philo);
 	pthread_mutex_destroy(&(c->running_mutex));
+	pthread_mutex_destroy(&(c->starting_mutex));
+	pthread_mutex_destroy(&(c->printf_mutex));
 	free(c);
 }
 
 t_fork	*initialize_forks(int nb_philo)
 {
 	t_fork	*forks;
-	int				i;
+	int		i;
 
 	if (nb_philo < 1)
 		return (NULL);
@@ -51,7 +53,7 @@ t_fork	*initialize_forks(int nb_philo)
 	{
 		forks[i].taken = 0;
 		forks[i].id_philo = -1;
-		forks[i].mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
+		pthread_mutex_init(&(forks[i].mutex), NULL);
 		i++;
 	}
 	return (forks);
@@ -92,7 +94,9 @@ t_common	initialize_common(int argc, char **argv)
 	else
 		c->max_eat_counter = -1;
 	c->running = 1;
-	c->running_mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_init(&(c->running_mutex), NULL);
+	pthread_mutex_init(&(c->starting_mutex), NULL);
+	pthread_mutex_init(&(c->printf_mutex), NULL);
 	c->forks = initialize_forks(c->nb_philo);
 	if (err || errors_in_common(c))
 		return (free_common(c), NULL);

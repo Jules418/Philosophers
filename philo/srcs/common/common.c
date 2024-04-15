@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   common.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 16:52:33 by jules             #+#    #+#             */
-/*   Updated: 2024/04/12 19:39:22 by jules            ###   ########.fr       */
+/*   Updated: 2024/04/15 10:51:25 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ int	get_running(t_common c)
 	pthread_mutex_lock(&(c->running_mutex));
 	value = c->running;
 	pthread_mutex_unlock(&(c->running_mutex));
-	return (value);	
+	return (value);
 }
 
-void set_running(t_common c, int value)
+void	set_running(t_common c, int value)
 {
 	pthread_mutex_lock(&(c->running_mutex));
 	c->running = value;

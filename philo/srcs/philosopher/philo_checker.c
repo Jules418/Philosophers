@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_checker.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 08:02:37 by jules             #+#    #+#             */
-/*   Updated: 2024/04/12 20:51:17 by jules            ###   ########.fr       */
+/*   Updated: 2024/04/15 10:49:41 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,9 @@ void	*dead_checker(void *args)
 	if (!p)
 		return (NULL);
 	c = p[0]->common;
+	pthread_mutex_lock(&(c->starting_mutex));
+	pthread_mutex_unlock(&(c->starting_mutex));
+	usleep(1000);
 	i = 0;
 	while (get_running(c))
 	{

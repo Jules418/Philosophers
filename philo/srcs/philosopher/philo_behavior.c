@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_behavior.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 05:45:34 by jules             #+#    #+#             */
-/*   Updated: 2024/04/13 10:01:15 by jules            ###   ########.fr       */
+/*   Updated: 2024/04/15 10:52:27 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,13 @@ void	eat(t_philo p, t_common c)
 		return ;
 	while (should_run(p))
 		if (trylock_fork(p->left_fork, p->id_philo))
-			break;
+			break ;
 	set_state(p, POSSES_ONE_FORK);
 	set_running(p->common, !print_state(p));
 	while (should_run(p))
-		if(trylock_fork(p->right_fork, p->id_philo))
-			break;
+		if (trylock_fork(p->right_fork, p->id_philo))
+			break ;
+	set_running(p->common, !print_state(p));
 	if (should_run(p))
 	{
 		set_state(p, EATING);
@@ -73,11 +74,9 @@ void	*routine_philo(void *arg)
 	t_philo	p;
 
 	p = arg;
-	if (update_last_time_eat(p) == 0)
-	{
-		set_running(p->common, 0);
-		return (NULL);
-	}
+	pthread_mutex_lock(&(p->common->starting_mutex));
+	pthread_mutex_unlock(&(p->common->starting_mutex));
+	set_running(p->common, update_last_time_eat(p));
 	if (p->id_philo % 2)
 		wait_ms(p->common, p->common->time_to_eat / 2);
 	while (should_run(p))

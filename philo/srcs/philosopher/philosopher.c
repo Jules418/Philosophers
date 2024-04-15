@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jules <jules@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jbanacze <jbanacze@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 04:56:49 by jules             #+#    #+#             */
-/*   Updated: 2024/04/12 21:18:06 by jules            ###   ########.fr       */
+/*   Updated: 2024/04/15 10:56:40 by jbanacze         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,12 @@ t_philo	create_philo(int id, t_common c)
 	p->id_philo = id;
 	p->common = c;
 	p->eat_count = 0;
-	p->eat_count_mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_init(&(p->eat_count_mutex), NULL);
 	p->state = 0;
 	p->left_fork = c->forks + id;
 	p->right_fork = c->forks + (id + 1) % c->nb_philo;
-	p->last_time_eat_mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
-	p->state_mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_init(&(p->last_time_eat_mutex), NULL);
+	pthread_mutex_init(&(p->state_mutex), NULL);
 	return (p);
 }
 
@@ -95,6 +95,10 @@ int	print_state(t_philo p)
 		return (1);
 	dt = time_diff(tv, p->common->start_time);
 	if (get_running(p->common) || (get_state(p) == DEAD))
+	{
+		pthread_mutex_lock(&(p->common->printf_mutex));
 		printf("%ld %d %s\n", dt, p->id_philo + 1, message);
+		pthread_mutex_unlock(&(p->common->printf_mutex));
+	}
 	return (0);
 }
